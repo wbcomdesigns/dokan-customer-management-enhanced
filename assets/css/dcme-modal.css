@@ -1,0 +1,586 @@
+/* Customer Details Modal Styles - Matching Wireframe Design */
+
+.dcme-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    animation: dcme-fadeIn 0.3s ease;
+    overflow-y: auto;
+}
+
+.dcme-modal-content {
+    background-color: #fff;
+    margin: 2% auto;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: dcme-slideIn 0.3s ease;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+/* Modal Header - Matching Wireframe */
+.dcme-modal-header {
+    padding: 20px;
+    background: #3498db;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px 10px 0 0;
+}
+
+.dcme-modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+}
+
+.dcme-modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dcme-modal-close:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+/* Modal Tabs - Matching Wireframe */
+.dcme-modal-tabs {
+    display: flex;
+    background: #ecf0f1;
+    border-bottom: 1px solid #bdc3c7;
+    overflow-x: auto;
+}
+
+.dcme-tab {
+    padding: 15px 25px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #2c3e50;
+    white-space: nowrap;
+    position: relative;
+    background: #ecf0f1;
+}
+
+.dcme-tab:hover {
+    background: #dfe4e5;
+    color: #3498db;
+}
+
+.dcme-tab-active {
+    background: white;
+    border-bottom-color: #3498db;
+    color: #3498db;
+    font-weight: bold;
+}
+
+.dcme-modal-body {
+    padding: 25px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 400px;
+    background: white;
+}
+
+/* Info Grid - Matching Wireframe */
+.dcme-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.dcme-info-card {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    border-left: 4px solid #3498db;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dcme-info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.dcme-info-card h4 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.dcme-info-card p {
+    margin: 8px 0;
+    color: #2c3e50;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.dcme-info-card strong {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* Course Item Styles - Matching Wireframe */
+.dcme-course-item {
+    background: white;
+    border: 1px solid #ecf0f1;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s ease;
+}
+
+.dcme-course-item:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.dcme-course-item h3 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.dcme-course-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #2c3e50;
+    font-size: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dcme-course-meta span {
+    font-weight: 500;
+}
+
+/* Progress Bar Container - Matching Wireframe */
+.dcme-progress-bar-container {
+    background: #ecf0f1;
+    border-radius: 10px;
+    height: 10px;
+    margin: 10px 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.dcme-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #27ae60, #2ecc71);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    position: relative;
+    min-width: 2px;
+}
+
+/* Course Stats Grid - Matching Wireframe */
+.dcme-course-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.dcme-stat {
+    text-align: center;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    transition: transform 0.2s ease;
+}
+
+.dcme-stat:hover {
+    transform: translateY(-2px);
+}
+
+.dcme-stat-number {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.dcme-stat-label {
+    font-size: 12px;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+/* Certificate Styles - Matching Wireframe */
+.dcme-certificate-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border: 1px solid #ecf0f1;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.dcme-certificate-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.dcme-certificate-info h4 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.dcme-certificate-meta {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-top: 5px;
+    line-height: 1.4;
+}
+
+.dcme-certificate-badge {
+    background: #27ae60;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Orders Table - Professional styling */
+.dcme-orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.dcme-orders-table th,
+.dcme-orders-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.dcme-orders-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dcme-orders-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.dcme-orders-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.dcme-orders-table tbody td {
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+/* Status Badges */
+.dcme-status {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dcme-status-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.dcme-status-processing {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.dcme-status-pending {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.dcme-status-on-hold {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+/* Loading and Error States */
+.dcme-loading,
+.dcme-error {
+    text-align: center;
+    padding: 60px 20px;
+    color: #7f8c8d;
+}
+
+.dcme-loading::before {
+    content: "";
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border: 3px solid #ecf0f1;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+.dcme-error {
+    color: #e74c3c;
+    background: #fadbd8;
+    border: 1px solid #f1948a;
+    border-radius: 5px;
+    margin: 20px;
+}
+
+/* No Results State */
+.dcme-no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: #7f8c8d;
+}
+
+.dcme-no-results i {
+    font-size: 48px;
+    color: #bdc3c7;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.dcme-no-results p {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.dcme-no-results small {
+    color: #95a5a6;
+    font-size: 14px;
+}
+
+/* Body scroll lock when modal is open */
+body.dcme-modal-open {
+    overflow: hidden;
+}
+
+/* Animations */
+@keyframes dcme-fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes dcme-slideIn {
+    from { 
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    .dcme-modal-content {
+        width: 95%;
+        margin: 5% auto;
+        max-height: 90vh;
+    }
+    
+    .dcme-modal-header {
+        padding: 15px;
+    }
+    
+    .dcme-modal-header h2 {
+        font-size: 16px;
+    }
+    
+    .dcme-modal-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .dcme-tab {
+        flex: 0 0 auto;
+        min-width: 120px;
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    
+    .dcme-modal-body {
+        padding: 20px;
+    }
+    
+    .dcme-info-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .dcme-info-card {
+        padding: 12px;
+    }
+    
+    .dcme-course-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .dcme-course-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .dcme-certificate-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .dcme-certificate-badge {
+        align-self: flex-end;
+    }
+    
+    .dcme-orders-table {
+        font-size: 13px;
+    }
+    
+    .dcme-orders-table th,
+    .dcme-orders-table td {
+        padding: 8px 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dcme-modal-content {
+        width: 98%;
+        margin: 1% auto;
+        border-radius: 0;
+    }
+    
+    .dcme-modal-header {
+        padding: 12px;
+        border-radius: 0;
+    }
+    
+    .dcme-modal-header h2 {
+        font-size: 14px;
+    }
+    
+    .dcme-modal-close {
+        font-size: 20px;
+        width: 30px;
+        height: 30px;
+    }
+    
+    .dcme-modal-body {
+        padding: 15px;
+    }
+    
+    .dcme-info-card {
+        padding: 10px;
+    }
+    
+    .dcme-course-item {
+        padding: 15px;
+    }
+    
+    .dcme-course-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .dcme-stat {
+        padding: 8px;
+    }
+    
+    .dcme-stat-number {
+        font-size: 16px;
+    }
+    
+    .dcme-certificate-item {
+        padding: 12px;
+    }
+    
+    .dcme-orders-table th:nth-child(n+3),
+    .dcme-orders-table td:nth-child(n+3) {
+        display: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .dcme-modal-content {
+        border: 2px solid #2c3e50;
+    }
+    
+    .dcme-tab-active {
+        border-bottom-width: 4px;
+    }
+    
+    .dcme-progress-bar {
+        background: #2c3e50;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .dcme-modal,
+    .dcme-modal-content,
+    .dcme-tab,
+    .dcme-progress-bar,
+    .dcme-info-card,
+    .dcme-course-item,
+    .dcme-certificate-item,
+    .dcme-stat {
+        animation: none;
+        transition: none;
+    }
+}

@@ -1,0 +1,393 @@
+/* Enhanced Customer Management Dashboard Styles - Matching Wireframe Design */
+
+.dcme-filters-section {
+    background: #ecf0f1;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.dcme-search-box {
+    margin-bottom: 20px;
+}
+
+.dcme-search-box input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    font-size: 16px;
+    background: #fff;
+    transition: border-color 0.3s ease;
+}
+
+.dcme-search-box input:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+}
+
+.dcme-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    align-items: end;
+}
+
+.dcme-filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.dcme-filter-item label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.dcme-filters select,
+.dcme-filters input {
+    padding: 8px 12px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #fff;
+    width: 100%;
+    transition: border-color 0.3s ease;
+}
+
+.dcme-filters select:focus,
+.dcme-filters input:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+}
+
+#dcme-clear-filters {
+    background: #95a5a6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+#dcme-clear-filters:hover {
+    background: #7f8c8d;
+}
+
+/* Enhanced Customer Table - Matching Wireframe Grid Layout */
+.dcme-customers-table-wrapper {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.dcme-customers-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+/* Table Header - Matching Wireframe Style */
+.dcme-customers-table thead {
+    background: #34495e;
+    color: white;
+}
+
+.dcme-customers-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+    border: none;
+    color: white;
+    font-size: 14px;
+}
+
+.dcme-customers-table tbody td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ecf0f1;
+    vertical-align: middle;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.dcme-customers-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.dcme-customers-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.dcme-customer-name {
+    color: #3498db;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.dcme-customer-name:hover {
+    color: #2980b9;
+}
+
+/* Progress Bar Styling - Matching Wireframe */
+.dcme-progress-mini {
+    width: 80px;
+    height: 8px;
+    background: #ecf0f1;
+    border-radius: 4px;
+    overflow: hidden;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.dcme-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #27ae60, #2ecc71);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    min-width: 2px;
+}
+
+/* Action Buttons - Matching Wireframe */
+.dcme-view-details {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-right: 5px;
+    transition: background-color 0.2s ease;
+    font-weight: 500;
+}
+
+.dcme-view-details:hover {
+    background: #2980b9;
+    color: white;
+}
+
+/* Course and Certificate Count Styling */
+.dcme-course-count, .dcme-cert-count {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.dcme-progress-text {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.dcme-last-activity {
+    color: #7f8c8d;
+    font-size: 13px;
+}
+
+/* Loading and Error States */
+.dcme-loading {
+    text-align: center;
+    padding: 40px;
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+.dcme-loading::before {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ecf0f1;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.dcme-error {
+    text-align: center;
+    padding: 40px;
+    color: #e74c3c;
+    background: #fadbd8;
+    border: 1px solid #f1948a;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+/* No Results State */
+.dcme-no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: #7f8c8d;
+}
+
+.dcme-no-results i {
+    font-size: 48px;
+    color: #bdc3c7;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.dcme-no-results p {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #34495e;
+}
+
+.dcme-no-results small {
+    color: #95a5a6;
+    font-size: 14px;
+}
+
+/* Search Highlighting */
+mark {
+    background: #fff3cd;
+    padding: 1px 3px;
+    border-radius: 2px;
+    font-weight: 500;
+    color: #856404;
+}
+
+/* Result Count Display */
+.dcme-result-count {
+    text-align: right;
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+/* Enhanced table for mobile */
+@media (max-width: 768px) {
+    .dcme-filters {
+        grid-template-columns: 1fr;
+    }
+    
+    .dcme-customers-table {
+        font-size: 13px;
+    }
+    
+    .dcme-customers-table th,
+    .dcme-customers-table td {
+        padding: 12px 8px;
+    }
+    
+    .dcme-progress-mini {
+        width: 60px;
+        height: 6px;
+    }
+    
+    .dcme-view-details {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+    
+    .dcme-filters-section {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dcme-customers-table-wrapper {
+        margin: 0 -20px;
+        border-radius: 0;
+    }
+    
+    .dcme-customers-table th:nth-child(3),
+    .dcme-customers-table td:nth-child(3),
+    .dcme-customers-table th:nth-child(7),
+    .dcme-customers-table td:nth-child(7) {
+        display: none;
+    }
+    
+    .dcme-search-box input {
+        padding: 10px 12px;
+    }
+    
+    .dcme-filters select,
+    .dcme-filters input {
+        padding: 8px 10px;
+    }
+}
+
+/* Spinning animation for loading */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Focus states for accessibility */
+.dcme-customer-name:focus,
+.dcme-view-details:focus,
+#dcme-clear-filters:focus {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+}
+
+/* Enhanced styling for existing Dokan elements */
+.vendor-customer-table tbody td a,
+.vendor-customer-table tbody td .row-actions a {
+    color: #7f8c8d;
+    transition: color 0.2s ease;
+}
+
+.vendor-customer-table tbody td a:hover,
+.vendor-customer-table tbody td .row-actions a:hover {
+    color: #2c3e50;
+}
+
+.vendor-customer-table tbody td .row-actions .delete a:hover {
+    color: #e74c3c;
+}
+
+.vendor-customer-table tbody .row-actions {
+    visibility: hidden;
+    font-size: 12px;
+    color: #95a5a6;
+    transition: visibility 0.2s ease;
+}
+
+.vendor-customer-table tbody .row-actions .delete a {
+    color: #c0392b;
+}
+
+.vendor-customer-table tbody tr:hover .row-actions {
+    visibility: visible;
+}
+
+.customer-billing-address {
+    width: 220px;
+    word-wrap: break-word;
+}
+
+/* Professional table styling matching wireframe */
+table.dokan-table.dokan-table-striped.vendor-customer-table th {
+    text-align: left;
+    background: #34495e;
+    color: white;
+    border-bottom: none;
+}
+
+table.dokan-table.dokan-table-striped.vendor-customer-table {
+    border-collapse: collapse;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+table.dokan-table.dokan-table-striped.vendor-customer-table thead tr th {
+    border-bottom: none;
+}
