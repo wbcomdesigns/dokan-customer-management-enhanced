@@ -18,17 +18,21 @@ class DCME_LearnDash {
         
         // Get vendor's groups/courses
         $vendor_courses = self::get_vendor_courses($vendor_id);
-        
         foreach ($vendor_courses as $course_id) {
             // Check if customer is enrolled in this course with fallback
             if (self::user_has_course_access($course_id, $customer_id)) {
                 $course_progress = self::get_user_course_progress($customer_id, $course_id);
                 $completion_date = self::get_course_completion_date($customer_id, $course_id);
-                
+                $progress = 0;
+                if( isset( $course_progress['status'] ) && 'completed' === $course_progress['status'] ){
+                    $progress = 100;
+                }else{
+                    $progress = isset($course_progress['percentage']) ? floatval($course_progress['percentage']) : 0;
+                }
                 $courses_data[] = array(
                     'id' => $course_id,
                     'title' => get_the_title($course_id),
-                    'progress' => $course_progress ? $course_progress['percentage'] : 0,
+                    'progress' => $progress,
                     'completed' => !empty($completion_date),
                     'completion_date' => $completion_date,
                     'enrolled_date' => self::get_course_enrolled_date($customer_id, $course_id),
@@ -50,7 +54,6 @@ class DCME_LearnDash {
                 }
             }
         }
-        
         return array(
             'courses' => $courses_data,
             'certificates' => $certificates_data
@@ -77,6 +80,7 @@ class DCME_LearnDash {
      * Get user course progress with fallback
      */
     private static function get_user_course_progress($user_id, $course_id) {
+        
         if (function_exists('learndash_user_get_course_progress')) {
             return learndash_user_get_course_progress($user_id, $course_id);
         }
@@ -142,6 +146,7 @@ class DCME_LearnDash {
         
         // Combine and return unique courses
         $all_courses = array_merge($product_courses, $group_courses);
+
         return array_unique($all_courses);
     }
     
@@ -149,18 +154,37 @@ class DCME_LearnDash {
         global $wpdb;
         
         // Get LearnDash courses that are associated with vendor's WooCommerce products
-        $course_ids = $wpdb->get_col($wpdb->prepare("
-            SELECT DISTINCT pm2.meta_value
+        $serialized_courses = $wpdb->get_col($wpdb->prepare("
+            SELECT DISTINCT pm.meta_value
             FROM {$wpdb->posts} p
-            INNER JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id
-            INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id
+            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
             WHERE p.post_type = 'product'
             AND p.post_author = %d
-            AND pm1.meta_key = '_related_course'
-            AND pm2.meta_key = '_related_course'
-            AND pm2.meta_value != ''
+            AND pm.meta_key = '_related_course'
+            AND pm.meta_value != ''
         ", $vendor_id));
-        
+
+        // Unserialize and flatten the course IDs
+        $course_ids = array();
+        foreach ($serialized_courses as $serialized) {
+            $unserialized = maybe_unserialize($serialized);
+            if (is_array($unserialized)) {
+                // Filter out any non-numeric values and convert to integers
+                $valid_ids = array_filter($unserialized, function($id) {
+                    return is_numeric($id) && $id > 0;
+                });
+                $course_ids = array_merge($course_ids, array_map('intval', $valid_ids));
+            } elseif (is_numeric($unserialized) && $unserialized > 0) {
+                // Handle cases where it might be a single ID
+                $course_ids[] = intval($unserialized);
+            }
+        }
+
+        // Remove duplicates and re-index
+        $course_ids = array_unique($course_ids);
+        $course_ids = array_values($course_ids);
+
+
         // Alternative: Check for LearnDash WooCommerce integration
         $woo_course_ids = $wpdb->get_col($wpdb->prepare("
             SELECT DISTINCT pm2.meta_value
@@ -171,35 +195,66 @@ class DCME_LearnDash {
             AND pm2.meta_key = '_learndash_woocommerce'
             AND pm2.meta_value != ''
         ", $vendor_id));
-        
+
         return array_merge($course_ids, $woo_course_ids);
     }
     
-    private static function get_courses_from_vendor_groups($vendor_id) {
-        global $wpdb;
+
+   private static function get_courses_from_vendor_groups($vendor_id) {
+        // Get all vendor products using Dokan
+        $products_query = dokan()->product->all(array(
+            'author' => $vendor_id,
+            'post_status' => 'publish',
+            'numberposts' => -1, // Get all products
+        ));
         
-        // Get groups managed by vendor (if using custom meta)
-        $group_ids = $wpdb->get_col($wpdb->prepare("
-            SELECT p.ID
-            FROM {$wpdb->posts} p
-            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'groups'
-            AND pm.meta_key = '_group_vendor_id'
-            AND pm.meta_value = %d
-        ", $vendor_id));
+        $group_ids = array();
         
-        $course_ids = array();
-        foreach ($group_ids as $group_id) {
-            $group_courses = learndash_group_enrolled_courses($group_id);
-            $course_ids = array_merge($course_ids, $group_courses);
+        // Check if query has posts
+        if ($products_query->have_posts()) {
+            while ($products_query->have_posts()) {
+                $products_query->the_post();
+                $product_id = get_the_ID();
+                
+                // Check for _related_group meta
+                $related_groups = get_post_meta($product_id, '_related_group', true);
+                if (!empty($related_groups)) {
+                    // Handle if it's an array or single value
+                    if (is_array($related_groups)) {
+                        $group_ids = array_merge($group_ids, $related_groups);
+                    } else {
+                        $group_ids[] = $related_groups;
+                    }
+                }
+            }
+            wp_reset_postdata(); // Important: Reset global post data
         }
         
-        return $course_ids;
+        $course_ids = array();
+        $group_ids = array_unique($group_ids); // Remove duplicate group IDs first
+        
+        foreach ($group_ids as $group_id) {
+            if (!empty($group_id) && is_numeric($group_id)) {
+                $group_courses = learndash_group_enrolled_courses($group_id);
+                if (!empty($group_courses) && is_array($group_courses)) {
+                    $course_ids = array_merge($course_ids, $group_courses);
+                }
+            }
+        }
+        
+        // Remove duplicates and re-index
+        return array_unique($course_ids);
     }
-    
-    private static function get_course_enrolled_date($user_id, $course_id) {
-        $user_course_access = ld_course_access_from($course_id, $user_id);
-        return isset($user_course_access['access_from']) ? $user_course_access['access_from'] : '';
+
+    private static function get_course_enrolled_date($user_id, $course_id)
+    {
+        $courses_access_from = ld_course_access_from($course_id, $user_id);
+
+        // If the course_id + user_id is not set we check the group courses.
+        if (empty($courses_access_from)) {
+            $courses_access_from = learndash_user_group_enrolled_to_course_from($user_id, $course_id);
+        }
+        return learndash_adjust_date_time_display( $courses_access_from );
     }
     
     private static function get_certificate_id($course_id, $user_id) {

@@ -56,16 +56,8 @@ class DCME_Dashboard {
         global $wpdb;
         
         // Get unique customers who have purchased from this vendor
-        $customer_ids = $wpdb->get_col($wpdb->prepare("
-            SELECT DISTINCT pm.meta_value
-            FROM {$wpdb->posts} p
-            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'shop_order'
-            AND p.post_author = %d
-            AND pm.meta_key = '_customer_user'
-            AND pm.meta_value > 0
-        ", $vendor_id));
-        
+        $customer_ids = dcme_get_vendor_customers( $vendor_id );
+
         if (empty($customer_ids)) {
             return array();
         }
@@ -92,7 +84,11 @@ class DCME_Dashboard {
         
         $total_progress = 0;
         foreach ($courses as $course) {
-            $total_progress += isset($course['progress']) ? floatval($course['progress']) : 0;
+            if( isset( $course['status'] ) && 'completed' === $course['status'] ){
+                $total_progress += 100;
+            }else{
+                $total_progress += isset($course['progress']) ? floatval($course['progress']) : 0;
+            }
         }
         
         return round($total_progress / count($courses), 2);

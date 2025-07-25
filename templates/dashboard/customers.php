@@ -114,7 +114,7 @@ $customers = DCME_Security::get_vendor_customers($vendor_id);
                                 <th><?php _e('Courses', 'dokan-customer-management-enhanced'); ?></th>
                                 <th><?php _e('Progress', 'dokan-customer-management-enhanced'); ?></th>
                                 <th><?php _e('Certificates', 'dokan-customer-management-enhanced'); ?></th>
-                                <th><?php _e('Last Activity', 'dokan-customer-management-enhanced'); ?></th>
+                                <!-- <th><?php //_e('Last Activity', 'dokan-customer-management-enhanced'); ?></th> -->
                                 <th><?php _e('Actions', 'dokan-customer-management-enhanced'); ?></th>
                             </tr>
                         </thead>
@@ -159,7 +159,7 @@ $customers = DCME_Security::get_vendor_customers($vendor_id);
                                     <?php echo round($avg_progress); ?>%
                                 </td>
                                 <td><?php echo $certificate_count; ?> <?php _e('earned', 'dokan-customer-management-enhanced'); ?></td>
-                                <td><?php echo esc_html($last_activity); ?></td>
+                                <!-- <td><?php //echo esc_html($last_activity); ?></td> -->
                                 <td>
                                     <button class="dokan-btn dokan-btn-sm dcme-view-details" data-customer-id="<?php echo esc_attr($customer->ID); ?>">
                                         <?php _e('View Details', 'dokan-customer-management-enhanced'); ?>

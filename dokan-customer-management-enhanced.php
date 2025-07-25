@@ -38,18 +38,20 @@ class DokanCustomerManagementEnhanced {
     }
     
     public function __construct() {
-        add_action('plugins_loaded', array($this, 'init'));
+        // add_action('admin_init', array($this, 'init'));
+        $this->init();
     }
     
     public function init() {
         // Check dependencies
+      
         if (!$this->check_dependencies()) {
             return;
         }
         
         // Load includes
         $this->includes();
-        
+
         // Initialize components
         $this->init_components();
         
@@ -93,6 +95,43 @@ class DokanCustomerManagementEnhanced {
         DCME_Security::instance();
     }
 }
+
+function dcme_get_vendor_orders( $vendor_id = '' ) {
+    $vendor_id = ( !empty( $vendor_id ) ) ? $vendor_id : dokan_get_current_user_id();
+        if( function_exists('dokan') ){
+            $query_args = [
+                        'seller_id' => $vendor_id,
+                        'limit'     => -1,
+                        'return'    => 'ids',
+                    ];
+            return dokan()->order->all( $query_args );
+        }else{
+            return array();
+        }
+}
+
+  /**
+     * Get collection of customer ids by vendor orders
+     *
+     * @return array
+     */
+function dcme_get_vendor_customers( $vendor_id = '' ) {
+        $vendor_id = ( !empty( $vendor_id ) ) ? $vendor_id : dokan_get_current_user_id();
+        $vendor_orders = dcme_get_vendor_orders( $vendor_id );
+        $customers = [];
+        if ( ! empty( $vendor_orders ) ) {
+            foreach ( $vendor_orders as $order_id ) {
+                $order = wc_get_order( $order_id );
+                $customer_id = $order->get_customer_id();
+
+                if( !empty( $customer_id ) ){
+                    $customers[] = $order->get_customer_id();
+                }
+            }
+        }
+        $customers = array_unique( $customers );
+        return $customers;
+    }
 
 /**
  * Initialize the plugin

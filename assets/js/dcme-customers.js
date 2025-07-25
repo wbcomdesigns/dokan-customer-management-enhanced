@@ -1,3 +1,6 @@
+(function( $ ) {
+	'use strict';
+
 /**
  * DCME Customers - Main JavaScript functionality
  */
@@ -55,53 +58,53 @@ var DCME_Customers = {
         var self = this;
         
         // Customer name/button clicks - open modal
-        $(document).on('click', '.dcme-customer-name, .dcme-view-details', function(e) {
+        jQuery(document).on('click', '.dcme-customer-name, .dcme-view-details', function(e) {
             e.preventDefault();
-            self.openCustomerModal($(this));
+            self.openCustomerModal(jQuery(this));
         });
         
         // Modal close events
-        $(document).on('click', '.dcme-modal-close', function(e) {
+        jQuery(document).on('click', '.dcme-modal-close', function(e) {
             e.preventDefault();
             self.closeModal();
         });
         
         // Close modal when clicking outside
-        $(document).on('click', '.dcme-modal', function(e) {
+        jQuery(document).on('click', '.dcme-modal', function(e) {
             if (e.target === this) {
                 self.closeModal();
             }
         });
         
         // Tab switching
-        $(document).on('click', '.dcme-tab', function(e) {
+        jQuery(document).on('click', '.dcme-tab', function(e) {
             e.preventDefault();
-            self.switchTab($(this));
+            self.switchTab(jQuery(this));
         });
         
         // Search functionality with debouncing
-        $('#dcme-customer-search').on('keyup', function() {
-            self.handleSearch($(this).val());
+        jQuery('#dcme-customer-search').on('keyup', function() {
+            self.handleSearch(jQuery(this).val());
         });
         
         // Filter changes
-        $('.dcme-filters select, .dcme-filters input').on('change', function() {
+        jQuery('.dcme-filters select, .dcme-filters input').on('change', function() {
             self.applyFilters();
         });
         
         // Clear filters
-        $('#dcme-clear-filters').on('click', function(e) {
+        jQuery('#dcme-clear-filters').on('click', function(e) {
             e.preventDefault();
             self.clearFilters();
         });
         
         // Keyboard shortcuts
-        $(document).on('keydown', function(e) {
+        jQuery(document).on('keydown', function(e) {
             self.handleKeyboardShortcuts(e);
         });
         
         // Window resize handling
-        $(window).on('resize', debounce(function() {
+        jQuery(window).on('resize', debounce(function() {
             self.handleResize();
         }, 250));
     },
@@ -134,17 +137,17 @@ var DCME_Customers = {
         this.state.currentCustomerId = customerId;
         
         // Update modal title
-        $('#dcme-modal-title').text(dcme_ajax.strings.customer_details + ': ' + customerName);
+        jQuery('#dcme-modal-title').text(dcme_ajax.strings.customer_details + ': ' + customerName);
         
         // Show modal with animation
-        $('#dcme-customer-modal').fadeIn(this.config.modalAnimationDuration);
-        $('body').addClass('dcme-modal-open');
+        jQuery('#dcme-customer-modal').fadeIn(this.config.modalAnimationDuration);
+        jQuery('body').addClass('dcme-modal-open');
         
         // Load default tab content
         this.loadTabContent('basic-info');
         
         // Focus management for accessibility
-        $('.dcme-modal-close').focus();
+        jQuery('.dcme-modal-close').focus();
         
         // Track analytics
         this.trackEvent('modal_opened', {customer_id: customerId});
@@ -156,8 +159,8 @@ var DCME_Customers = {
     closeModal: function() {
         var self = this;
         
-        $('#dcme-customer-modal').fadeOut(this.config.modalAnimationDuration, function() {
-            $('body').removeClass('dcme-modal-open');
+        jQuery('#dcme-customer-modal').fadeOut(this.config.modalAnimationDuration, function() {
+            jQuery('body').removeClass('dcme-modal-open');
             
             // Reset modal state
             self.resetModalState();
@@ -165,7 +168,7 @@ var DCME_Customers = {
         
         // Return focus to trigger element
         if (this.state.currentCustomerId) {
-            $('[data-customer-id="' + this.state.currentCustomerId + '"]').first().focus();
+            jQuery('[data-customer-id="' + this.state.currentCustomerId + '"]').first().focus();
         }
         
         this.trackEvent('modal_closed');
@@ -180,11 +183,11 @@ var DCME_Customers = {
         this.state.isLoading = false;
         
         // Clear tab content
-        $('#dcme-tab-content').empty();
+        jQuery('#dcme-tab-content').empty();
         
         // Reset active tab
-        $('.dcme-tab').removeClass('dcme-tab-active');
-        $('.dcme-tab[data-tab="basic-info"]').addClass('dcme-tab-active');
+        jQuery('.dcme-tab').removeClass('dcme-tab-active');
+        jQuery('.dcme-tab[data-tab="basic-info"]').addClass('dcme-tab-active');
     },
     
     /**
@@ -202,7 +205,7 @@ var DCME_Customers = {
         }
         
         // Update tab active state
-        $('.dcme-tab').removeClass('dcme-tab-active');
+        jQuery('.dcme-tab').removeClass('dcme-tab-active');
         $tab.addClass('dcme-tab-active');
         
         // Load tab content
@@ -280,7 +283,7 @@ var DCME_Customers = {
                     content = '<div class="dcme-error">Invalid tab</div>';
             }
             
-            $('#dcme-tab-content').html(content);
+            jQuery('#dcme-tab-content').html(content);
             
             // Animate progress bars if on courses tab
             if (tabName === 'courses') {
@@ -331,14 +334,13 @@ var DCME_Customers = {
         var html = '';
         courses.forEach(function(course) {
             var progressClass = course.progress === 100 ? 'completed' : course.progress > 0 ? 'in-progress' : 'not-started';
-            
             html += `
                 <div class="dcme-course-item ${progressClass}">
                     <h3>${DCME_Customers.escapeHtml(course.title)}</h3>
                     <div class="dcme-course-meta">
                         <span><strong>Progress:</strong> ${Math.round(course.progress)}%</span>
                         <span><strong>Enrolled:</strong> ${DCME_Customers.formatDate(course.enrolled_date)}</span>
-                        ${course.completion_date ? `<span><strong>Completed:</strong> ${DCME_Customers.formatDate(course.completion_date)}</span>` : ''}
+                        ${course.completion_date != '0' ? `<span><strong>Completed:</strong> ${DCME_Customers.formatDate(course.completion_date)}</span>` : '<span><strong>Completed:</strong>Not Yet'}
                     </div>
                     <div class="dcme-progress-bar-container">
                         <div class="dcme-progress-bar" data-progress="${course.progress}" style="width: 0%"></div>
@@ -355,15 +357,15 @@ var DCME_Customers = {
                         <div class="dcme-stat">
                             <span class="dcme-stat-number">${course.completed ? 'Yes' : 'No'}</span>
                             <span class="dcme-stat-label">Completed</span>
-                        </div>
-                        <div class="dcme-stat">
-                            <span class="dcme-stat-number">${course.last_activity ? DCME_Customers.getTimeSince(course.last_activity) : 'No activity'}</span>
-                            <span class="dcme-stat-label">Last Activity</span>
-                        </div>
+                        </div>  
                     </div>
                 </div>
             `;
         });
+        // <div class="dcme-stat">
+        //                     <span class="dcme-stat-number">${course.last_activity ? DCME_Customers.getTimeSince(course.last_activity) : 'No activity'}</span>
+        //                     <span class="dcme-stat-label">Last Activity</span>
+        //                 </div>
         
         return html;
     },
@@ -378,13 +380,14 @@ var DCME_Customers = {
         
         var html = '';
         certificates.forEach(function(cert) {
+            console.log(cert.earned_date);
+            console.log(DCME_Customers.formatDate(cert.earned_date));
             html += `
                 <div class="dcme-certificate-item">
                     <div class="dcme-certificate-info">
                         <h4><i class="fas fa-award"></i> ${DCME_Customers.escapeHtml(cert.course_title)} Certificate</h4>
                         <p><strong>Earned:</strong> ${DCME_Customers.formatDate(cert.earned_date)}</p>
                         <p><strong>Certificate ID:</strong> <code>${DCME_Customers.escapeHtml(cert.certificate_id)}</code></p>
-                        ${cert.certificate_link ? `<p><strong>Verification:</strong> <a href="${cert.certificate_link}" target="_blank">View Certificate</a></p>` : ''}
                     </div>
                     <div class="dcme-certificate-badge">
                         <i class="fas fa-check-circle"></i> Earned
@@ -427,7 +430,7 @@ var DCME_Customers = {
                 <tr>
                     <td><strong>#${order.id}</strong></td>
                     <td>${DCME_Customers.formatDate(order.date)}</td>
-                    <td>${DCME_Customers.escapeHtml(order.total)}</td>
+                    <td>${order.total}</td>
                     <td><span class="dcme-status dcme-status-${order.status}">${DCME_Customers.escapeHtml(order.status)}</span></td>
                     <td title="${DCME_Customers.escapeHtml(itemsList)}">${DCME_Customers.truncateText(itemsList, 50)}</td>
                 </tr>
@@ -487,7 +490,7 @@ var DCME_Customers = {
      */
     applyFiltersFallback: function() {
         var filters = this.getFilterValues();
-        var searchTerm = $('#dcme-customer-search').val().trim();
+        var searchTerm = jQuery('#dcme-customer-search').val().trim();
         
         // Show loading state
         this.showTableLoading();
@@ -521,10 +524,10 @@ var DCME_Customers = {
      */
     getFilterValues: function() {
         return {
-            course_status: $('#dcme-course-status-filter').val(),
-            course_id: $('#dcme-course-filter').val(),
-            enrollment_date: $('#dcme-enrollment-date-filter').val(),
-            certificate_status: $('#dcme-certificate-filter').val()
+            course_status: jQuery('#dcme-course-status-filter').val(),
+            course_id: jQuery('#dcme-course-filter').val(),
+            enrollment_date: jQuery('#dcme-enrollment-date-filter').val(),
+            certificate_status: jQuery('#dcme-certificate-filter').val()
         };
     },
     
@@ -532,9 +535,9 @@ var DCME_Customers = {
      * Clear all filters
      */
     clearFilters: function() {
-        $('.dcme-filters select').val('');
-        $('.dcme-filters input').val('');
-        $('#dcme-customer-search').val('');
+        jQuery('.dcme-filters select').val('');
+        jQuery('.dcme-filters input').val('');
+        jQuery('#dcme-customer-search').val('');
         
         this.applyFilters();
         this.trackEvent('filters_cleared');
@@ -545,7 +548,7 @@ var DCME_Customers = {
      */
     renderFilteredResults: function(customers) {
         if (!customers || customers.length === 0) {
-            $('#dcme-customers-tbody').html(`
+            jQuery('#dcme-customers-tbody').html(`
                 <tr>
                     <td colspan="8" class="dcme-no-results">
                         <i class="fas fa-search"></i>
@@ -557,7 +560,7 @@ var DCME_Customers = {
         }
         
         var html = '';
-        var searchTerm = $('#dcme-customer-search').val().trim();
+        var searchTerm = jQuery('#dcme-customer-search').val().trim();
         
         customers.forEach(function(customer) {
             html += `
@@ -587,7 +590,7 @@ var DCME_Customers = {
             `;
         });
         
-        $('#dcme-customers-tbody').html(html);
+        jQuery('#dcme-customers-tbody').html(html);
     },
     
     /**
@@ -609,14 +612,14 @@ var DCME_Customers = {
      * Show loading state in tab content
      */
     showLoading: function() {
-        $('#dcme-tab-content').html('<div class="dcme-loading">' + dcme_ajax.strings.loading + '</div>');
+        jQuery('#dcme-tab-content').html('<div class="dcme-loading">' + dcme_ajax.strings.loading + '</div>');
     },
     
     /**
      * Show loading state in table
      */
     showTableLoading: function() {
-        $('#dcme-customers-tbody').html(`
+        jQuery('#dcme-customers-tbody').html(`
             <tr>
                 <td colspan="8" class="dcme-loading">
                     ${dcme_ajax.strings.loading}
@@ -629,14 +632,14 @@ var DCME_Customers = {
      * Show error message in tab content
      */
     showError: function(message) {
-        $('#dcme-tab-content').html('<div class="dcme-error">' + this.escapeHtml(message) + '</div>');
+        jQuery('#dcme-tab-content').html('<div class="dcme-error">' + this.escapeHtml(message) + '</div>');
     },
     
     /**
      * Show error message in table
      */
     showTableError: function(message) {
-        $('#dcme-customers-tbody').html(`
+        jQuery('#dcme-customers-tbody').html(`
             <tr>
                 <td colspan="8" class="dcme-error">
                     ${this.escapeHtml(message)}
@@ -649,8 +652,8 @@ var DCME_Customers = {
      * Animate progress bars
      */
     animateProgressBars: function() {
-        $('.dcme-progress-bar').each(function() {
-            var $bar = $(this);
+        jQuery('.dcme-progress-bar').each(function() {
+            var $bar = jQuery(this);
             var progress = $bar.data('progress') || 0;
             
             setTimeout(function() {
@@ -674,9 +677,9 @@ var DCME_Customers = {
      */
     setupAccessibility: function() {
         // Add ARIA labels and keyboard navigation
-        $('.dcme-customer-name').attr('role', 'button').attr('tabindex', '0');
-        $('.dcme-view-details').attr('aria-label', 'View customer details');
-        $('.dcme-modal-close').attr('aria-label', 'Close modal');
+        jQuery('.dcme-customer-name').attr('role', 'button').attr('tabindex', '0');
+        jQuery('.dcme-view-details').attr('aria-label', 'View customer details');
+        jQuery('.dcme-modal-close').attr('aria-label', 'Close modal');
     },
     
     /**
@@ -684,14 +687,14 @@ var DCME_Customers = {
      */
     handleKeyboardShortcuts: function(e) {
         // ESC key closes modal
-        if (e.keyCode === 27 && $('#dcme-customer-modal').is(':visible')) {
+        if (e.keyCode === 27 && jQuery('#dcme-customer-modal').is(':visible')) {
             this.closeModal();
         }
         
         // Enter key on customer name
-        if (e.keyCode === 13 && $(e.target).hasClass('dcme-customer-name')) {
+        if (e.keyCode === 13 && jQuery(e.target).hasClass('dcme-customer-name')) {
             e.preventDefault();
-            this.openCustomerModal($(e.target));
+            this.openCustomerModal(jQuery(e.target));
         }
     },
     
@@ -700,7 +703,7 @@ var DCME_Customers = {
      */
     handleResize: function() {
         // Adjust modal size if needed
-        if ($('#dcme-customer-modal').is(':visible')) {
+        if (jQuery('#dcme-customer-modal').is(':visible')) {
             // Responsive adjustments
         }
     },
@@ -743,10 +746,26 @@ var DCME_Customers = {
     /**
      * Utility: Format date
      */
-    formatDate: function(dateString) {
+      formatDate: function(dateString) {
+
         if (!dateString) return 'Not available';
         
-        var date = new Date(dateString);
+        var date;
+        
+        // Check if it's a Unix timestamp (10 digits = seconds, 13 digits = milliseconds)
+        if (/^\d{10}$/.test(dateString)) {
+            date = new Date(Number(dateString) * 1000); // Convert seconds to milliseconds
+        } else if (/^\d{13}$/.test(dateString)) {
+            date = new Date(Number(dateString)); // Already in milliseconds
+        } else {
+            date = new Date(dateString); // Regular date string
+        }
+
+        // Check if date is valid
+        if (isNaN(date.getTime())) {
+            return 'Invalid date';
+        }
+        
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     },
     
@@ -804,3 +823,7 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
+
+
+
+})( jQuery );

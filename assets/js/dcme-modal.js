@@ -1,3 +1,6 @@
+(function( $ ) {
+	'use strict';
+
 /**
  * DCME Modal - Modal functionality for customer details
  */
@@ -59,7 +62,7 @@ var DCME_Modal = {
         var self = this;
         
         // Hide modal with animation
-        $('#dcme-customer-modal').fadeOut(this.config.animationDuration, function() {
+        jQuery('#dcme-customer-modal').fadeOut(this.config.animationDuration, function() {
             self.onModalClosed();
         });
     },
@@ -89,14 +92,14 @@ var DCME_Modal = {
      * Show modal with animation
      */
     showModal: function() {
-        $('#dcme-customer-modal').fadeIn(this.config.animationDuration);
+        jQuery('#dcme-customer-modal').fadeIn(this.config.animationDuration);
     },
     
     /**
      * Set modal title
      */
     setTitle: function(title) {
-        $('#dcme-modal-title').text(title);
+        jQuery('#dcme-modal-title').text(title);
     },
     
     /**
@@ -104,11 +107,11 @@ var DCME_Modal = {
      */
     resetModal: function() {
         // Clear tab content
-        $('#dcme-tab-content').empty();
+        jQuery('#dcme-tab-content').empty();
         
         // Reset active tab
-        $('.dcme-tab').removeClass('dcme-tab-active');
-        $('.dcme-tab[data-tab="basic-info"]').addClass('dcme-tab-active');
+        jQuery('.dcme-tab').removeClass('dcme-tab-active');
+        jQuery('.dcme-tab[data-tab="basic-info"]').addClass('dcme-tab-active');
         
         this.state.currentTab = 'basic-info';
     },
@@ -179,7 +182,7 @@ var DCME_Modal = {
                     content = '<div class="dcme-error">Invalid tab selected</div>';
             }
             
-            $('#dcme-tab-content').html(content);
+            jQuery('#dcme-tab-content').html(content);
             
             // Post-render actions
             this.postRenderActions(tabName);
@@ -258,14 +261,13 @@ var DCME_Modal = {
         
         courses.forEach(function(course) {
             var statusClass = course.progress === 100 ? 'completed' : course.progress > 0 ? 'in-progress' : 'not-started';
-            
             html += `
                 <div class="dcme-course-item ${statusClass}">
                     <h3>${self.escapeHtml(course.title)}</h3>
                     <div class="dcme-course-meta">
                         <span><strong>Progress:</strong> ${Math.round(course.progress)}%</span>
                         <span><strong>Enrolled:</strong> ${self.formatDate(course.enrolled_date)}</span>
-                        ${course.completion_date ? `<span><strong>Completed:</strong> ${self.formatDate(course.completion_date)}</span>` : ''}
+                        ${course.completion_date != '0' ? `<span><strong>Completed:</strong> ${self.formatDate(course.completion_date)}</span>` : '<span><strong>Completed:</strong>Not Yet'}
                     </div>
                     <div class="dcme-progress-bar-container">
                         <div class="dcme-progress-bar" data-progress="${course.progress}" style="width: 0%"></div>
@@ -283,14 +285,14 @@ var DCME_Modal = {
                             <span class="dcme-stat-number">${course.completed ? 'Yes' : 'No'}</span>
                             <span class="dcme-stat-label">Completed</span>
                         </div>
-                        <div class="dcme-stat">
-                            <span class="dcme-stat-number">${course.last_activity ? self.getTimeSince(course.last_activity) : 'No activity'}</span>
-                            <span class="dcme-stat-label">Last Activity</span>
-                        </div>
                     </div>
                 </div>
             `;
         });
+        // <div class="dcme-stat">
+        //                     <span class="dcme-stat-number">${course.last_activity ? self.getTimeSince(course.last_activity) : 'No activity'}</span>
+        //                     <span class="dcme-stat-label">Last Activity</span>
+        //                 </div>
         
         return html;
     },
@@ -313,13 +315,13 @@ var DCME_Modal = {
         var self = this;
         
         certificates.forEach(function(cert) {
+            console.log(self.formatDate(cert.earned_date));
             html += `
                 <div class="dcme-certificate-item">
                     <div class="dcme-certificate-info">
                         <h4><i class="fas fa-award"></i> ${self.escapeHtml(cert.course_title)} Certificate</h4>
                         <p><strong>Earned:</strong> ${self.formatDate(cert.earned_date)}</p>
                         <p><strong>Certificate ID:</strong> <code>${self.escapeHtml(cert.certificate_id)}</code></p>
-                        ${cert.certificate_link ? `<p><strong>Verification:</strong> <a href="${cert.certificate_link}" target="_blank" rel="noopener">View Certificate</a></p>` : ''}
                     </div>
                     <div class="dcme-certificate-badge">
                         <i class="fas fa-check-circle"></i> Earned
@@ -369,7 +371,7 @@ var DCME_Modal = {
                 <tr>
                     <td><strong>#${order.id}</strong></td>
                     <td>${self.formatDate(order.date)}</td>
-                    <td>${self.escapeHtml(order.total)}</td>
+                    <td>${order.total}</td>
                     <td><span class="dcme-status dcme-status-${order.status}">${self.escapeHtml(order.status)}</span></td>
                     <td title="${self.escapeHtml(itemsList)}">${self.truncateText(itemsList, 50)}</td>
                 </tr>
@@ -384,14 +386,14 @@ var DCME_Modal = {
      * Show loading state
      */
     showLoading: function() {
-        $('#dcme-tab-content').html('<div class="dcme-loading">' + dcme_ajax.strings.loading + '</div>');
+        jQuery('#dcme-tab-content').html('<div class="dcme-loading">' + dcme_ajax.strings.loading + '</div>');
     },
     
     /**
      * Show error message
      */
     showError: function(message) {
-        $('#dcme-tab-content').html('<div class="dcme-error">' + this.escapeHtml(message) + '</div>');
+        jQuery('#dcme-tab-content').html('<div class="dcme-error">' + this.escapeHtml(message) + '</div>');
     },
     
     /**
@@ -399,8 +401,8 @@ var DCME_Modal = {
      */
     animateProgressBars: function() {
         setTimeout(function() {
-            $('.dcme-progress-bar').each(function() {
-                var $bar = $(this);
+            jQuery('.dcme-progress-bar').each(function() {
+                var $bar = jQuery(this);
                 var progress = $bar.data('progress') || 0;
                 
                 $bar.animate({
@@ -415,8 +417,8 @@ var DCME_Modal = {
      */
     setupTooltips: function() {
         // Add tooltips to elements with title attributes
-        $('[title]').each(function() {
-            $(this).attr('data-toggle', 'tooltip');
+        jQuery('[title]').each(function() {
+            jQuery(this).attr('data-toggle', 'tooltip');
         });
     },
     
@@ -425,8 +427,8 @@ var DCME_Modal = {
      */
     updateAccessibility: function() {
         // Ensure proper ARIA labels and roles
-        $('.dcme-stat').attr('role', 'button').attr('tabindex', '0');
-        $('.dcme-certificate-item').attr('role', 'article');
+        jQuery('.dcme-stat').attr('role', 'button').attr('tabindex', '0');
+        jQuery('.dcme-certificate-item').attr('role', 'article');
     },
     
     /**
@@ -437,7 +439,7 @@ var DCME_Modal = {
             return;
         }
         
-        var $modal = $('#dcme-customer-modal');
+        var $modal = jQuery('#dcme-customer-modal');
         var $focusableElements = $modal.find('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
         var $firstElement = $focusableElements.first();
         var $lastElement = $focusableElements.last();
@@ -468,9 +470,9 @@ var DCME_Modal = {
      */
     preventBodyScroll: function(prevent) {
         if (prevent) {
-            $('body').addClass('dcme-modal-open');
+            jQuery('body').addClass('dcme-modal-open');
         } else {
-            $('body').removeClass('dcme-modal-open');
+            jQuery('body').removeClass('dcme-modal-open');
         }
     },
     
@@ -479,7 +481,7 @@ var DCME_Modal = {
      */
     bindEscapeKey: function() {
         var self = this;
-        $(document).on('keydown.dcme-modal', function(e) {
+        jQuery(document).on('keydown.dcme-modal', function(e) {
             if (e.keyCode === 27) { // Escape key
                 e.preventDefault();
                 self.close();
@@ -491,8 +493,8 @@ var DCME_Modal = {
      * Unbind escape key
      */
     unbindEscapeKey: function() {
-        $(document).off('keydown.dcme-modal');
-        $('#dcme-customer-modal').off('keydown.dcme-focus-trap');
+        jQuery(document).off('keydown.dcme-modal');
+        jQuery('#dcme-customer-modal').off('keydown.dcme-focus-trap');
     },
     
     /**
@@ -500,7 +502,7 @@ var DCME_Modal = {
      */
     restoreFocus: function() {
         if (this.state.currentCustomerId) {
-            var $trigger = $('[data-customer-id="' + this.state.currentCustomerId + '"]').first();
+            var $trigger = jQuery('[data-customer-id="' + this.state.currentCustomerId + '"]').first();
             if ($trigger.length) {
                 $trigger.focus();
             }
@@ -561,10 +563,26 @@ var DCME_Modal = {
     /**
      * Utility: Format date
      */
-    formatDate: function(dateString) {
+   formatDate: function(dateString) {
+
         if (!dateString) return 'Not available';
         
-        var date = new Date(dateString);
+        var date;
+        
+        // Check if it's a Unix timestamp (10 digits = seconds, 13 digits = milliseconds)
+        if (/^\d{10}$/.test(dateString)) {
+            date = new Date(Number(dateString) * 1000); // Convert seconds to milliseconds
+        } else if (/^\d{13}$/.test(dateString)) {
+            date = new Date(Number(dateString)); // Already in milliseconds
+        } else {
+            date = new Date(dateString); // Regular date string
+        }
+
+        // Check if date is valid
+        if (isNaN(date.getTime())) {
+            return 'Invalid date';
+        }
+        
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     },
     
@@ -605,3 +623,5 @@ var DCME_Modal = {
         return text.substring(0, length) + '...';
     }
 };
+
+})( jQuery );

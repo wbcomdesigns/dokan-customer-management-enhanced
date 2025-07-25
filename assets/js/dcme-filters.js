@@ -1,3 +1,6 @@
+(function( $ ) {
+	'use strict';
+
 /**
  * DCME Filters - Advanced filtering and search functionality
  */
@@ -37,29 +40,29 @@ var DCME_Filters = {
         var self = this;
         
         // Search input with debouncing
-        $('#dcme-customer-search').on('input', function() {
-            self.handleSearchInput($(this).val());
+        jQuery('#dcme-customer-search').on('input', function() {
+            self.handleSearchInput(jQuery(this).val());
         });
         
         // Filter dropdowns and inputs
-        $('.dcme-filters select, .dcme-filters input[type="date"]').on('change', function() {
+        jQuery('.dcme-filters select, .dcme-filters input[type="date"]').on('change', function() {
             self.handleFilterChange();
         });
         
         // Clear filters button
-        $('#dcme-clear-filters').on('click', function(e) {
+        jQuery('#dcme-clear-filters').on('click', function(e) {
             e.preventDefault();
             self.clearAllFilters();
         });
         
         // Advanced filter toggle (if implemented)
-        $(document).on('click', '.dcme-advanced-filters-toggle', function(e) {
+        jQuery(document).on('click', '.dcme-advanced-filters-toggle', function(e) {
             e.preventDefault();
             self.toggleAdvancedFilters();
         });
         
         // Export filtered results (if implemented)
-        $(document).on('click', '.dcme-export-filtered', function(e) {
+        jQuery(document).on('click', '.dcme-export-filtered', function(e) {
             e.preventDefault();
             self.exportFilteredResults();
         });
@@ -146,25 +149,25 @@ var DCME_Filters = {
         var filters = {};
         
         // Course status filter
-        var courseStatus = $('#dcme-course-status-filter').val();
+        var courseStatus = jQuery('#dcme-course-status-filter').val();
         if (courseStatus) {
             filters.course_status = courseStatus;
         }
         
         // Course selection filter
-        var courseId = $('#dcme-course-filter').val();
+        var courseId = jQuery('#dcme-course-filter').val();
         if (courseId) {
             filters.course_id = parseInt(courseId);
         }
         
         // Enrollment date filter
-        var enrollmentDate = $('#dcme-enrollment-date-filter').val();
+        var enrollmentDate = jQuery('#dcme-enrollment-date-filter').val();
         if (enrollmentDate) {
             filters.enrollment_date = enrollmentDate;
         }
         
         // Certificate status filter
-        var certificateStatus = $('#dcme-certificate-filter').val();
+        var certificateStatus = jQuery('#dcme-certificate-filter').val();
         if (certificateStatus) {
             filters.certificate_status = certificateStatus;
         }
@@ -185,9 +188,9 @@ var DCME_Filters = {
      */
     clearAllFilters: function() {
         // Clear form inputs
-        $('#dcme-customer-search').val('');
-        $('.dcme-filters select').val('');
-        $('.dcme-filters input').val('');
+        jQuery('#dcme-customer-search').val('');
+        jQuery('.dcme-filters select').val('');
+        jQuery('.dcme-filters input').val('');
         
         // Reset state
         this.state.currentFilters = {};
@@ -262,7 +265,7 @@ var DCME_Filters = {
             html += DCME_Filters.createCustomerRow(customer, searchTerm);
         });
         
-        $('#dcme-customers-tbody').html(html);
+        jQuery('#dcme-customers-tbody').html(html);
         
         // Update result count
         this.updateResultCount(customers.length);
@@ -330,7 +333,7 @@ var DCME_Filters = {
      * Show loading state
      */
     showLoadingState: function() {
-        $('#dcme-customers-tbody').html(`
+        jQuery('#dcme-customers-tbody').html(`
             <tr>
                 <td colspan="8" class="dcme-loading">
                     <i class="fas fa-spinner fa-spin"></i> ${dcme_ajax.strings.loading}
@@ -339,7 +342,7 @@ var DCME_Filters = {
         `);
         
         // Disable filter controls
-        $('.dcme-filters select, .dcme-filters input, #dcme-customer-search').prop('disabled', true);
+        jQuery('.dcme-filters select, .dcme-filters input, #dcme-customer-search').prop('disabled', true);
     },
     
     /**
@@ -353,7 +356,7 @@ var DCME_Filters = {
             submessage = 'No customers match "' + this.escapeHtml(this.state.currentSearch) + '"';
         }
         
-        $('#dcme-customers-tbody').html(`
+        jQuery('#dcme-customers-tbody').html(`
             <tr>
                 <td colspan="8" class="dcme-no-results">
                     <i class="fas fa-search"></i>
@@ -371,7 +374,7 @@ var DCME_Filters = {
      * Show error message
      */
     showError: function(message) {
-        $('#dcme-customers-tbody').html(`
+        jQuery('#dcme-customers-tbody').html(`
             <tr>
                 <td colspan="8" class="dcme-error">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -387,18 +390,18 @@ var DCME_Filters = {
      * Enable filter controls
      */
     enableFilterControls: function() {
-        $('.dcme-filters select, .dcme-filters input, #dcme-customer-search').prop('disabled', false);
+        jQuery('.dcme-filters select, .dcme-filters input, #dcme-customer-search').prop('disabled', false);
     },
     
     /**
      * Update result count
      */
     updateResultCount: function(count) {
-        var $counter = $('.dcme-result-count');
+        var $counter = jQuery('.dcme-result-count');
         if ($counter.length === 0) {
             // Create counter if it doesn't exist
-            $('.dcme-filters-section').append('<div class="dcme-result-count"></div>');
-            $counter = $('.dcme-result-count');
+            jQuery('.dcme-filters-section').append('<div class="dcme-result-count"></div>');
+            $counter = jQuery('.dcme-result-count');
         }
         
         var text = count === 1 ? '1 customer found' : count + ' customers found';
@@ -413,7 +416,7 @@ var DCME_Filters = {
         var stats = this.calculateFilterStats(customers);
         
         // Update UI with stats if summary panel exists
-        if ($('.dcme-filter-summary').length > 0) {
+        if (jQuery('.dcme-filter-summary').length > 0) {
             this.updateSummaryPanel(stats);
         }
     },
@@ -458,23 +461,23 @@ var DCME_Filters = {
         var self = this;
         
         // Validate date inputs
-        $('#dcme-enrollment-date-filter').on('change', function() {
-            var date = $(this).val();
+        jQuery('#dcme-enrollment-date-filter').on('change', function() {
+            var date = jQuery(this).val();
             if (date && !self.isValidDate(date)) {
-                $(this).addClass('error');
+                jQuery(this).addClass('error');
                 self.showValidationError('Please enter a valid date');
             } else {
-                $(this).removeClass('error');
+                jQuery(this).removeClass('error');
             }
         });
         
         // Validate search input length
-        $('#dcme-customer-search').on('input', function() {
-            var length = $(this).val().length;
+        jQuery('#dcme-customer-search').on('input', function() {
+            var length = jQuery(this).val().length;
             if (length > self.config.maxSearchLength) {
-                $(this).addClass('warning');
+                jQuery(this).addClass('warning');
             } else {
-                $(this).removeClass('warning');
+                jQuery(this).removeClass('warning');
             }
         });
     },
@@ -520,7 +523,7 @@ var DCME_Filters = {
     applySavedFilters: function(filterData) {
         // Apply search term
         if (filterData.search) {
-            $('#dcme-customer-search').val(filterData.search);
+            jQuery('#dcme-customer-search').val(filterData.search);
             this.state.currentSearch = filterData.search;
         }
         
@@ -528,7 +531,7 @@ var DCME_Filters = {
         if (filterData.filters) {
             Object.keys(filterData.filters).forEach(function(key) {
                 var value = filterData.filters[key];
-                var $element = $('#dcme-' + key.replace('_', '-') + '-filter');
+                var $element = jQuery('#dcme-' + key.replace('_', '-') + '-filter');
                 if ($element.length) {
                     $element.val(value);
                 }
@@ -554,8 +557,8 @@ var DCME_Filters = {
      */
     showSearchWarning: function(message) {
         // Show temporary warning message
-        var $warning = $('<div class="dcme-search-warning">' + message + '</div>');
-        $('.dcme-search-box').append($warning);
+        var $warning = jQuery('<div class="dcme-search-warning">' + message + '</div>');
+        jQuery('.dcme-search-box').append($warning);
         
         setTimeout(function() {
             $warning.fadeOut(function() {
@@ -589,7 +592,7 @@ var DCME_Filters = {
      * Toggle advanced filters (if implemented)
      */
     toggleAdvancedFilters: function() {
-        $('.dcme-advanced-filters').slideToggle();
+        jQuery('.dcme-advanced-filters').slideToggle();
     },
     
     /**
@@ -630,3 +633,5 @@ var DCME_Filters = {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 };
+
+})( jQuery );

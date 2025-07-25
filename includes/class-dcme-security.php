@@ -35,7 +35,7 @@ class DCME_Security {
         if (get_current_user_id() !== $vendor_id) {
             return false;
         }
-        
+      
         // Check if user has permission
         if (!current_user_can('dokanpro_view_customers')) {
             return false;
@@ -58,54 +58,37 @@ class DCME_Security {
         
         return false;
     }
-    
-    private static function customer_has_orders_from_vendor($vendor_id, $customer_id) {
-        global $wpdb;
-        
-        // Check if customer has orders from this vendor
-        $order_count = $wpdb->get_var($wpdb->prepare("
-            SELECT COUNT(*)
-            FROM {$wpdb->posts} p
-            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'shop_order'
-            AND p.post_author = %d
-            AND pm.meta_key = '_customer_user'
-            AND pm.meta_value = %d
-        ", $vendor_id, $customer_id));
-        
-        return $order_count > 0;
+
+    private static function customer_has_orders_from_vendor($vendor_id, $customer_id)
+    {
+        // Get orders for the specific customer from the vendor
+        if (!function_exists('dokan')) {
+            return false;
+        }
+        $query_args = [
+            'seller_id' => $vendor_id,
+            'customer_id' => $customer_id,
+            'limit'     => 1,
+            'return'    => 'ids',
+        ];
+
+        $orders = dokan()->order->all($query_args);
+        return !empty($orders);
     }
     
     public static function get_vendor_customers($vendor_id) {
         global $wpdb;
-        
-        // Get customers from orders
-        $order_customer_ids = $wpdb->get_col($wpdb->prepare("
-            SELECT DISTINCT pm.meta_value
-            FROM {$wpdb->posts} p
-            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'shop_order'
-            AND p.post_author = %d
-            AND pm.meta_key = '_customer_user'
-            AND pm.meta_value > 0
-        ", $vendor_id));
-        
-        // Get customers from LearnDash course enrollments
-        $course_customer_ids = self::get_customers_from_vendor_courses($vendor_id);
-        
-        // Merge and get unique customer IDs
-        $all_customer_ids = array_unique(array_merge($order_customer_ids, $course_customer_ids));
-        
+
+        $all_customer_ids = dcme_get_vendor_customers( $vendor_id );
         if (empty($all_customer_ids)) {
             return array();
         }
-        
         // Get user data for these customers
         $customers = get_users(array(
             'include' => $all_customer_ids,
             'fields' => 'all'
         ));
-        
+
         return $customers;
     }
     
@@ -114,7 +97,7 @@ class DCME_Security {
         $customer_ids = array();
         
         foreach ($vendor_courses as $course_id) {
-            $course_users = learndash_get_course_users_list($course_id);
+            $course_users = learndash_get_users_for_course($course_id);
             if (!empty($course_users)) {
                 $customer_ids = array_merge($customer_ids, $course_users);
             }

@@ -29,7 +29,7 @@ class DCME_Core {
         
         wp_enqueue_style('dcme-dashboard', DCME_PLUGIN_URL . 'assets/css/dcme-dashboard.css', array(), DCME_VERSION);
         wp_enqueue_style('dcme-modal', DCME_PLUGIN_URL . 'assets/css/dcme-modal.css', array(), DCME_VERSION);
-        
+        wp_enqueue_script('jquery');
         wp_enqueue_script('dcme-customers', DCME_PLUGIN_URL . 'assets/js/dcme-customers.js', array('jquery'), DCME_VERSION, true);
         wp_enqueue_script('dcme-modal', DCME_PLUGIN_URL . 'assets/js/dcme-modal.js', array('jquery'), DCME_VERSION, true);
         wp_enqueue_script('dcme-filters', DCME_PLUGIN_URL . 'assets/js/dcme-filters.js', array('jquery'), DCME_VERSION, true);

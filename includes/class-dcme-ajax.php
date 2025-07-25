@@ -13,7 +13,9 @@ class DCME_Ajax {
     }
     
     public function __construct() {
+         add_action('wp_ajax_nopriv_dcme_get_customer_details', array($this, 'get_customer_details'));
         add_action('wp_ajax_dcme_get_customer_details', array($this, 'get_customer_details'));
+        add_action('wp_ajax_nopriv_dcme_filter_customers', array($this, 'filter_customers'));
         add_action('wp_ajax_dcme_filter_customers', array($this, 'filter_customers'));
         add_action('wp_ajax_dcme_search_customers', array($this, 'search_customers'));
     }
@@ -31,7 +33,6 @@ class DCME_Ajax {
         if (!DCME_Security::vendor_can_view_customer($vendor_id, $customer_id)) {
             wp_send_json_error(__('Access denied', 'dokan-customer-management-enhanced'));
         }
-        
         // Get customer data
         $customer_data = $this->prepare_customer_data($customer_id, $vendor_id);
         
@@ -104,7 +105,6 @@ class DCME_Ajax {
     private function get_customer_orders($customer_id, $vendor_id) {
         // Get orders for this customer from this vendor
         $orders = $this->get_vendor_customer_orders($vendor_id, $customer_id);
-        
         $formatted_orders = array();
         foreach ($orders as $order) {
             $wc_order = wc_get_order($order);
@@ -112,7 +112,7 @@ class DCME_Ajax {
                 $formatted_orders[] = array(
                     'id' => $wc_order->get_id(),
                     'date' => $wc_order->get_date_created()->format('Y-m-d'),
-                    'total' => $wc_order->get_formatted_total(),
+                    'total' => $wc_order->get_formatted_order_total(),
                     'status' => $wc_order->get_status(),
                     'items' => $this->get_order_items($wc_order)
                 );
@@ -121,31 +121,31 @@ class DCME_Ajax {
         
         return $formatted_orders;
     }
-    
-    private function get_vendor_customer_orders($vendor_id, $customer_id) {
+
+    private function get_vendor_customer_orders($vendor_id, $customer_id)
+    {
         global $wpdb;
-        
-        $order_ids = $wpdb->get_col($wpdb->prepare("
-            SELECT p.ID
-            FROM {$wpdb->posts} p
-            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'shop_order'
-            AND p.post_author = %d
-            AND pm.meta_key = '_customer_user'
-            AND pm.meta_value = %d
-            ORDER BY p.post_date DESC
-        ", $vendor_id, $customer_id));
-        
-        return $order_ids;
+
+        if (!function_exists('dokan')) {
+            return [];
+        }
+
+        $query_args = [
+            'seller_id' => $vendor_id,
+            'customer_id' => $customer_id,
+            'limit'     => -1,
+            'return'    => 'ids',
+        ];
+        return dokan()->order->all($query_args);
     }
-    
+
     private function get_order_items($order) {
         $items = array();
         foreach ($order->get_items() as $item) {
             $items[] = array(
                 'name' => $item->get_name(),
                 'quantity' => $item->get_quantity(),
-                'total' => $order->get_formatted_line_total($item)
+                'total' => $order->get_total($item)
             );
         }
         return $items;
@@ -216,6 +216,39 @@ class DCME_Ajax {
                     }
                 }
                 if (!$course_match) continue;
+            }
+            
+            // Apply certificate status filter
+            if (!empty($filters['certificate_status'])) {
+                $certificate_match = false;
+                $certificate_count = count($course_data['certificates']);
+                
+                switch ($filters['certificate_status']) {
+                    case 'earned':
+                        if ($certificate_count > 0) {
+                            $certificate_match = true;
+                        }
+                        break;
+                    case 'not-earned':
+                        if ($certificate_count == 0) {
+                            $certificate_match = true;
+                        }
+                        break;
+                }
+                
+                if (!$certificate_match) continue;
+            }
+            
+            // Apply enrollment date filter
+            if (!empty($filters['enrollment_date'])) {
+                $enrollment_match = false;
+                $customer_registered_date = date('Y-m-d', strtotime($customer->user_registered));
+                
+                if ($customer_registered_date === $filters['enrollment_date']) {
+                    $enrollment_match = true;
+                }
+                
+                if (!$enrollment_match) continue;
             }
             
             // Add to filtered results
