@@ -76,20 +76,29 @@ class DCME_Security {
         return !empty($orders);
     }
     
-    public static function get_vendor_customers($vendor_id) {
+    public static function get_vendor_customers($vendor_id, $paged = 1, $limit = 10) {
         global $wpdb;
 
         $all_customer_ids = dcme_get_vendor_customers( $vendor_id );
         if (empty($all_customer_ids)) {
             return array();
         }
+        // Pagination logic
+        $offset = ($paged - 1) * $limit;
+        $paged_customer_ids = array_slice($all_customer_ids, $offset, $limit);
         // Get user data for these customers
         $customers = get_users(array(
-            'include' => $all_customer_ids,
+            'include' => $paged_customer_ids,
             'fields' => 'all'
         ));
 
         return $customers;
+    }
+
+    // Helper to get total customer count for vendor
+    public static function get_vendor_customers_count($vendor_id) {
+        $all_customer_ids = dcme_get_vendor_customers( $vendor_id );
+        return is_array($all_customer_ids) ? count($all_customer_ids) : 0;
     }
     
     private static function get_customers_from_vendor_courses($vendor_id) {

@@ -275,6 +275,7 @@ var DCME_Filters = {
      * Create customer table row
      */
     createCustomerRow: function(customer, searchTerm) {
+        console.log(customer);
         return `
             <tr data-customer-id="${customer.ID}">
                 <td>
@@ -294,16 +295,13 @@ var DCME_Filters = {
                 </td>
                 <td>
                     <div class="dcme-progress-mini">
-                        <div class="dcme-progress-bar" style="width: ${customer.avg_progress}%"></div>
+                        <div class="dcme-progress-bar" data-progress="${customer.avg_progress}" style="width: ${customer.avg_progress}%"></div>
                     </div>
                     <span class="dcme-progress-text">${Math.round(customer.avg_progress)}%</span>
                 </td>
                 <td>
                     <span class="dcme-cert-count">${customer.certificate_count}</span> 
                     <small>earned</small>
-                </td>
-                <td>
-                    <span class="dcme-last-activity">${customer.last_activity} ago</span>
                 </td>
                 <td>
                     <button class="dokan-btn dokan-btn-sm dcme-view-details" data-customer-id="${customer.ID}">

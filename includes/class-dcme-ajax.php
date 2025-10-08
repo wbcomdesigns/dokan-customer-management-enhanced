@@ -222,14 +222,13 @@ class DCME_Ajax {
             if (!empty($filters['certificate_status'])) {
                 $certificate_match = false;
                 $certificate_count = count($course_data['certificates']);
-                
                 switch ($filters['certificate_status']) {
-                    case 'earned':
+                    case 'has-certificates':
                         if ($certificate_count > 0) {
                             $certificate_match = true;
                         }
                         break;
-                    case 'not-earned':
+                    case 'no-certificates':
                         if ($certificate_count == 0) {
                             $certificate_match = true;
                         }
@@ -238,15 +237,18 @@ class DCME_Ajax {
                 
                 if (!$certificate_match) continue;
             }
-            
+
             // Apply enrollment date filter
             if (!empty($filters['enrollment_date'])) {
                 $enrollment_match = false;
-                $customer_registered_date = date('Y-m-d', strtotime($customer->user_registered));
-                
-                if ($customer_registered_date === $filters['enrollment_date']) {
-                    $enrollment_match = true;
+               
+                foreach ($course_data['courses']as $key => $enrolled_data ) {
+                    $customer_enrolled_date = date('Y-m-d', strtotime($enrolled_data['enrolled_date']));
+                    if ($customer_enrolled_date === $filters['enrollment_date']) {
+                        $enrollment_match = true;
+                    }
                 }
+                
                 
                 if (!$enrollment_match) continue;
             }

@@ -316,11 +316,12 @@ var DCME_Customers = {
                 <div class="dcme-info-card">
                     <h4><i class="fas fa-calendar"></i> Account Details</h4>
                     <p><strong>Registered:</strong> ${this.formatDate(info.registered)}</p>
-                    <p><strong>Last Login:</strong> ${info.last_login ? this.formatDate(info.last_login) : 'Never logged in'}</p>
                     <p><strong>Customer Since:</strong> ${this.getTimeSince(info.registered)}</p>
                 </div>
             </div>
         `;
+
+        //  <p><strong>Last Login:</strong> ${info.last_login ? this.formatDate(info.last_login) : 'Never logged in'}</p>
     },
     
     /**
@@ -563,6 +564,7 @@ var DCME_Customers = {
         var searchTerm = jQuery('#dcme-customer-search').val().trim();
         
         customers.forEach(function(customer) {
+            console.log(customer);
             html += `
                 <tr data-customer-id="${customer.ID}">
                     <td>
@@ -575,12 +577,11 @@ var DCME_Customers = {
                     <td>${customer.course_count} enrolled</td>
                     <td>
                         <div class="dcme-progress-mini">
-                            <div class="dcme-progress-bar" style="width: ${customer.avg_progress}%"></div>
+                            <div class="dcme-progress-bar" data-progress="${customer.avg_progress}" style="width: ${customer.avg_progress}%"></div>
                         </div>
                         ${Math.round(customer.avg_progress)}%
                     </td>
                     <td>${customer.certificate_count} earned</td>
-                    <td>${customer.last_activity} ago</td>
                     <td>
                         <button class="dokan-btn dokan-btn-sm dcme-view-details" data-customer-id="${customer.ID}">
                             View Details

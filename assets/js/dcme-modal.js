@@ -229,7 +229,6 @@ var DCME_Modal = {
                 <div class="dcme-info-card">
                     <h4><i class="fas fa-calendar"></i> Account Details</h4>
                     <p><strong>Registered:</strong> ${this.formatDate(info.registered)}</p>
-                    <p><strong>Last Login:</strong> ${info.last_login ? this.formatDate(info.last_login) : 'Never logged in'}</p>
                     <p><strong>Customer Since:</strong> ${this.getTimeSince(info.registered)}</p>
                 </div>
                 <div class="dcme-info-card">
@@ -240,6 +239,7 @@ var DCME_Modal = {
                 </div>
             </div>
         `;
+        // <p><strong>Last Login:</strong> ${info.last_login ? this.formatDate(info.last_login) : 'Never logged in'}</p>
     },
     
     /**

@@ -8,7 +8,10 @@
  */
 
 $vendor_id = get_current_user_id();
-$customers = DCME_Security::get_vendor_customers($vendor_id);
+$paged = isset($_GET['pagenum']) ? absint($_GET['pagenum']) : 1;
+$limit = 10;
+$customers = DCME_Security::get_vendor_customers($vendor_id, $paged, $limit);
+$total_customers = DCME_Security::get_vendor_customers_count($vendor_id);
 ?>
 
 <?php do_action( 'dokan_dashboard_wrap_start' ); ?>
@@ -112,7 +115,6 @@ $customers = DCME_Security::get_vendor_customers($vendor_id);
                                 <th><?php _e('Email', 'dokan-customer-management-enhanced'); ?></th>
                                 <th><?php _e('Phone', 'dokan-customer-management-enhanced'); ?></th>
                                 <th><?php _e('Courses', 'dokan-customer-management-enhanced'); ?></th>
-                                <th><?php _e('Progress', 'dokan-customer-management-enhanced'); ?></th>
                                 <th><?php _e('Certificates', 'dokan-customer-management-enhanced'); ?></th>
                                 <!-- <th><?php //_e('Last Activity', 'dokan-customer-management-enhanced'); ?></th> -->
                                 <th><?php _e('Actions', 'dokan-customer-management-enhanced'); ?></th>
@@ -152,12 +154,6 @@ $customers = DCME_Security::get_vendor_customers($vendor_id);
                                 </td>
                                 <td><?php echo esc_html(get_user_meta($customer->ID, 'billing_phone', true)); ?></td>
                                 <td><?php echo $course_count; ?> <?php _e('enrolled', 'dokan-customer-management-enhanced'); ?></td>
-                                <td>
-                                    <div class="dcme-progress-mini">
-                                        <div class="dcme-progress-bar" style="width: <?php echo esc_attr($avg_progress); ?>%"></div>
-                                    </div>
-                                    <?php echo round($avg_progress); ?>%
-                                </td>
                                 <td><?php echo $certificate_count; ?> <?php _e('earned', 'dokan-customer-management-enhanced'); ?></td>
                                 <!-- <td><?php //echo esc_html($last_activity); ?></td> -->
                                 <td>
@@ -177,8 +173,8 @@ $customers = DCME_Security::get_vendor_customers($vendor_id);
                 </div>
 
                 <?php
-                // Pagination (keeping original pagination logic)
-                $user_count = count($customers);
+                // Pagination
+                $user_count = $total_customers;
                 $paged = isset($_GET['pagenum']) ? absint($_GET['pagenum']) : 1;
                 $limit = 10;
                 $num_of_pages = ceil($user_count / $limit);

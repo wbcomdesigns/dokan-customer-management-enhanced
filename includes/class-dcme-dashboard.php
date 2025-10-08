@@ -35,14 +35,6 @@ class DCME_Dashboard {
     
     public function load_customers_template($query_vars) {
         if (isset($query_vars['customers'])) {
-            if (!current_user_can('dokanpro_view_customers')) {
-                dokan_get_template_part('global/dokan-error', '', array(
-                    'deleted' => false,
-                    'message' => __('You have no permission to view this page', 'dokan-customer-management-enhanced')
-                ));
-                return;
-            }
-            
             include DCME_PLUGIN_PATH . 'templates/dashboard/customers.php';
         }
     }

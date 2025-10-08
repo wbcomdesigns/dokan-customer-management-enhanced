@@ -23,11 +23,14 @@ class DCME_LearnDash {
             if (self::user_has_course_access($course_id, $customer_id)) {
                 $course_progress = self::get_user_course_progress($customer_id, $course_id);
                 $completion_date = self::get_course_completion_date($customer_id, $course_id);
-                $progress = 0;
+                $total_steps = isset( $course_progress['total'] ) ? $course_progress['total'] : 0;
+                $completed_steps = isset( $course_progress['completed'] ) ? $course_progress['completed'] : 0;
+            
+                $percentage = $total_steps > 0 ? ($completed_steps / $total_steps) * 100 : 0;
                 if( isset( $course_progress['status'] ) && 'completed' === $course_progress['status'] ){
                     $progress = 100;
                 }else{
-                    $progress = isset($course_progress['percentage']) ? floatval($course_progress['percentage']) : 0;
+                    $progress = $percentage;
                 }
                 $courses_data[] = array(
                     'id' => $course_id,
@@ -80,7 +83,6 @@ class DCME_LearnDash {
      * Get user course progress with fallback
      */
     private static function get_user_course_progress($user_id, $course_id) {
-        
         if (function_exists('learndash_user_get_course_progress')) {
             return learndash_user_get_course_progress($user_id, $course_id);
         }
